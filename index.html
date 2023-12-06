@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+*{
+font-family:Arial;
+}
+.main-box{
+width:100%;
+margin:10px;
+padding:10px;
+display:flex;
+flex-direction:column;
+align-items:center;
+border
+}
+.main-box h1{
+font-size:50px;
+font-weight:600;
+}
+#Q-no{
+color:#ba31ec;
+border:1px solid #ba31ec;
+padding:5px 20px;
+font-weight:600;
+font-size:20px;
+
+}
+#question{
+font-size:25px;
+}
+#option button{
+margin:10px;
+text-align:left;
+width:400px;
+display:flex;
+flex-direction:column;
+background-color:#ba31ec;
+padding:20px;
+font-size:15px;
+color:white;
+font-weight:600;
+transition: all 0.5s;
+}
+#option button:hover:not([disabled]){
+background-color:white;
+color:black;
+}
+.main-box button{
+padding:10px 20px;
+font-size:20px;
+font-weight:400;
+border-color:#ba31ec;
+transition: all 0.5s;
+}
+.main-box button:hover{
+background-color:#ba31ec;
+color:white;
+}
+
+.correct {
+    background-color: green !important;
+}
+.selected {
+    background-color: red !important;
+}
+#score_box{
+display:none;
+text-align:center;
+position:absolute;
+top:30%;
+left:35%;
+width:400px;
+height:250px;
+background-color:#ba31ec;
+color:white;
+}
+#score_div{
+width:100%;
+height:100px;
+display:flex;
+justify-content:center;
+background-color:teal;
+}
+#playAgain{
+margin:10px;
+padding:10px 20px;
+font-size:20px;
+font-weight:400;
+border-color:white;
+transition: all 0.5s;
+border-radius:10px;
+color:#8e25b5;
+font-weight:550;
+}
+#playAgain:hover{
+background-color:#8e25b5;
+color:white;
+}
+</style>
+</head>
+<body>
+<div class="main-box">
+<h1>Quiz Game</h1>
+<span id="Q-no">0/10</span>
+<h3 id="question">goes here question</h3>
+<div id="option">
+<button value="button" onclick="clickButton(this)" id="option1"></button>
+<button value="button" onclick="clickButton(this)" id="option2"></button>
+<button value="button" onclick="clickButton(this)" id="option3"></button>
+<button value="button" onclick="clickButton(this)" id="option4"></button>
+</div>
+<button onclick="check()">Check Answer!</button>
+</div>
+<div id="score_box">
+<h2>thanks for playing the game </h2>
+<div id="score_div">
+<h2>Your Score is <span id="User_score"></span></h2>
+</div>
+<button onclick="playAgain()" id="playAgain">play again</button>
+</div>
+
+<script>
+var currentquestionIndex = 0;
+var userAnswers = [];
+var score = 0;
+var mcq = [
+    {
+        question: "What is the capital of India?",
+        options: ["Thailand", "Maharashtra", "Delhi", "Telangana"],
+        correctAnswer: "Delhi"
+    },
+    {
+        question: "Who is the prime minister of India?",
+        options: ["Narendra Modi", "Amit Shah", "Adityanath Yogi", "Kejriwal"],
+        correctAnswer: "Narendra Modi"
+    },
+	{
+        question: "which is the most popular programming language in 2023?",
+        options: ["Java", "Python", "Javascript", "c++"],
+        correctAnswer: "Javascript"
+    },
+	{
+        question: "Who discovered that the earth revolves around the sun? ",
+        options: ["Nicolaus Copernicus", "Shawshank Redemption", "Einstain", "nicolas cobalt"],
+        correctAnswer: "Nicolaus Copernicus"
+    },
+	{
+        question: "What software company is headquartered in Redmond, Washington? ",
+        options: ["Microsoft", "Apple", "Amazon", "TCS"],
+        correctAnswer: "Microsoft"
+    },
+	    {
+        question: "What’s the national animal of Australia?",
+        options: ["Red Tiger", "Red Kangaroo", "Fox", "Panda"],
+        correctAnswer: "Red Kangaroo"
+    },
+    {
+        question: "What’s the smallest country in the world?",
+        options: ["Spen", "Thailand", "Turkey", "The Vatican"],
+        correctAnswer: "The Vatican"
+    },
+	{
+        question: "Name Disney’s first film? ",
+        options: ["Snow White", "Prem", "the Secret", "Beast"],
+        correctAnswer: "Snow White"
+    },
+	{
+        question: "How many bones are in the human body? ",
+        options: ["300 bones", "206 bones", "106 bones", "316 bones"],
+        correctAnswer: "206 bones"
+    },
+	{
+        question: "The concept of gravity was discovered by which famous physicist?",
+        options: ["Nicola Tesla", "Albert Einstain", "Sir Isaac Newton", "Sir P.V. Raman"],
+        correctAnswer: "Sir Isaac Newton"
+    }
+	
+];
+
+var optionElements = document.querySelectorAll("#option button");
+var questionElement = document.getElementById("question");
+var QNoElement = document.getElementById("Q-no");
+
+function showQuiz(){
+    var currentquestion = mcq[currentquestionIndex];
+    questionElement.textContent = currentquestion.question;
+    QNoElement.textContent = (currentquestionIndex + 1) + "/" + mcq.length;
+
+    for (var i = 0; i < optionElements.length; i++) {
+        optionElements[i].textContent = currentquestion.options[i];
+        optionElements[i].classList.remove("selected", "correct");
+       
+    }
+}
+
+function clickButton(selectedButton) {
+    var selectedOption = selectedButton.textContent;
+    var correctOption = mcq[currentquestionIndex].correctAnswer;
+
+    if (selectedOption == correctOption) {
+        selectedButton.classList.add("correct");
+		score += 10;
+    } else {
+        selectedButton.classList.add("selected");
+		
+		for(var i = 0;i < optionElements.length; i++){
+			if(optionElements[i].textContent == correctOption){
+				optionElements[i].classList.add("correct");
+			}
+		}
+    }
+
+    for (var i = 0; i < optionElements.length; i++) {
+        optionElements[i].disabled = true;  
+    }
+}
+
+function check() {
+    var selectedOption = document.querySelector("#option button.selected");
+
+    if (selectedOption) {
+        userAnswers.push(selectedOption.textContent);
+    }
+	
+	for(var i = 0;i < optionElements.length; i++){
+		optionElements[i].disabled = false;
+	}
+
+    currentquestionIndex++;
+
+    if (currentquestionIndex < mcq.length) {
+        showQuiz();
+    } else {
+        // when quiz completed show score
+		document.querySelector(".main-box").style.display = "none";
+		document.getElementById("score_box").style.display = "block";
+        document.getElementById("User_score").textContent = score;
+		
+    }
+}
+
+function playAgain(){
+document.getElementById("score_box").style.display = "none";
+document.querySelector(".main-box").style.display = "flex";
+currentquestionIndex = 0;
+score = 0;
+showQuiz();
+}
+
+showQuiz();
+</script>
+</body>
+</html>
+
+
